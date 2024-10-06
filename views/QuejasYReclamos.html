@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Quejas y Reclamos</title>
+    <link rel="stylesheet" href="QuejasYReclamos.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img class="logo" src="https://i.imgur.com/fOxDc3Q.png" alt="Logo de Mi Sitio Web" width="300" height="135">
+            <form action="Busqueda.html" method="get">
+                <input type="search" name="q" placeholder="Buscar..." />
+                <button type="submit">Buscar</button>
+            </form>
+            <nav>
+                <a href="UNIPRO.html#somos-proya">Quienes Somos</a>
+                <a href="UNIPRO.html#nuestros-productos">Nuestros Productos</a>
+                <a href="UNIPRO.html#caracteristicas">Características</a>
+                <a href="UNIPRO.html#registrarse">Inicia sesión o regístrate</a>
+            </nav>
+        </div>
+        <div id="icon-container">
+            <div class="icon-link">
+                <a class="button_rank_quejas" target="_blank" href="QuejasYReclamos.html">
+                    <img src="https://w7.pngwing.com/pngs/100/701/png-transparent-computer-icons-complaints-cdr-text-internet.png">
+                </a>
+            </div>
+            <div class="icon-link">
+                <a class="button_rank_preguntas" target="_blank" href="PreguntasFrecuentes.html">
+                    <img src="https://www.itm.edu.co//wp-content/uploads/2021/bienestar/presupuesto-participativo/pp-7.jpg">
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="form-container">
+        <h1>Formulario de Quejas y Reclamos</h1>
+        <p>Por favor, complete el siguiente formulario para enviar sus comentarios y reclamaciones:</p>
+        <form action="/procesar_reclamo" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+            <div class="form-group">
+                <label for="asunto">Asunto:</label>
+                <input type="text" id="asunto" name="asunto" required>
+            </div>
+            <div class="form-group">
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+            </div>
+            <button type="submit">Enviar Reclamo</button>
+        </form>        
+        
+    </div>
+</body>
+</html>

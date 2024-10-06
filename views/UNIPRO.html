@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>UNIPRO</title>
+    <link rel="stylesheet" href="UNIPRO.css">
+    <link rel="stylesheet"
+     type="text/css" href="UNIPRO.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+                <img class="logo" src="https://i.imgur.com/fOxDc3Q.png" alt="Logo de Mi Sitio Web" width="300" height="135">
+             <form action="Busqueda.html" method="get">
+        <input type="search" name="q" placeholder="Buscar..." />
+        <button type="submit">Buscar</button>
+    </form>
+            <nav>
+                <a href="#somos-proya">Quienes Somos</a>
+                <a href="#nuestros-productos">Nuestros Productos</a>
+                <a href="#caracteristicas">Características</a>
+                <a href="#registrarse">Inicia sesión o regístrate</a>
+            </nav>
+
+        </div>
+        <div id="icon-container">
+            <div class="icon-link">
+                <a class="button_rank_quejas" target="_blank" href="QuejasYReclamos.html">
+                    <img src="https://w7.pngwing.com/pngs/100/701/png-transparent-computer-icons-complaints-cdr-text-internet.png">
+                    
+                </a>
+            </div>
+            <div class="icon-link">
+                <a class="button_rank_preguntas" target="_blank" href="PreguntasFrecuentes.html">
+                    <img src="https://www.itm.edu.co//wp-content/uploads/2021/bienestar/presupuesto-participativo/pp-7.jpg">
+                    
+                </a>
+            </div>
+        </div>
+       
+
+    </header>
+    
+  
+
+        <section id="hero">
+        <h1>Publica tus proyectos universitarios <br>con los Mejores</h1>
+        <button>COMIENZA YÁ!</button>
+    </section>
+
+    <section id="somos-proya">
+        <div class="container">
+            <div class="img-container"></div>
+            <div class="texto">
+              
+                <h2>Somos <span class="color-acento">UNIPRO</span></h2>
+                <p>En UNIPRO, la misión de tres jóvenes estudiantes de la Fundación Universitaria para el Desarrollo Humano (Uninpahu) es promover la innovación y el desarrollo colaborativo al 
+                    proporcionar un espacio en línea donde creadores, desarrolladores y equipos pueden compartir y 
+                    colaborar en proyectos de todo tipo. Creemos que cada idea, por pequeña que sea, tiene el potencial 
+                    de cambiar el mundo, y estamos comprometidos a hacer que la colaboración sea más accesible que nunca.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="nuestros-productos">
+        <div class="container">
+            <h2>Nuestros Productos</h2>
+            <div class="productos">
+                <div class="carta">
+                    <h3>Suscripciones premium</h3>
+                    <br>
+                    <p>¿Quieres llevar tu experiencia al siguiente nivel? Nuestra suscripción premium es la clave para desbloquear un mundo de posibilidades y ventajas exclusivas en nuestra plataforma. Conviértete en un miembro premium y experimenta la diferencia.</p>
+                    <button>+ Info</button>
+                </div>
+                <div class="carta">
+                    <h3>Plantillas y recursos</h3>
+                    <br>
+                    <p>¿Quieres ahorrar tiempo y esfuerzo en tu próximo proyecto? Nuestro servicio de Plantillas y Recursos te brinda acceso a una biblioteca en constante crecimiento de elementos listos para usar que pueden llevar tus creaciones al siguiente nivel.</p>
+                    <a href="PlantillasYRecursos.html">
+                        <button>+ Info</button>
+                    </a>
+                </div>
+                <div class="carta">
+                    <h3>Análisis de proyectos</h3>
+                    <br>
+                    <br>
+                    <p>¿Tienes un proyecto que necesitas llevar al siguiente nivel? ¿Deseas asegurarte de que tu trabajo sea de la más alta calidad? Nuestro servicio de Análisis de Proyectos está diseñado para ayudarte a lograr exactamente eso.</p>
+                    <button>+ Info</button>
+                </div>  
+            </div>
+        </div>
+    </section>
+
+    <section id="caracteristicas">
+        <div class="container">
+            <ul>
+                <li>✔️ 100% online</li>
+                <li>✔️ Navegación intuitiva</li>
+                <li>✔️ Gestión de Proyectos </li>
+                <li>✔️ Comentarios y valoraciones</li>
+                <li>✔️ Colaboración en Proyectos </li>
+                <li>✔️ Privacidad</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="registrarse">
+        <h3>Inicia sesión o Regístrate</h3>
+        <div class="container">
+            <!-- Formulario de Registro -->
+            <div class="form-container">
+                <h1>Registro</h1>
+                <form action="http://localhost:3000/procesar_registro" method="post">
+                   <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required><br>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required><br>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required><br>
+                    <center><button type="submit">Registrarse</button></center>
+                    <br>
+                </form>
+            </div>
+            
+            <!-- Formulario de Inicio de Sesión -->
+            <div class="form-container">
+                <h1>Iniciar Sesión</h1>
+                <form action="http://localhost:3000/procesar_login" method="post">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required><br>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required><br>
+                    <center><button type="submit">Iniciar Sesión</button></center>
+                </form>
+            </div>
+        </div>
+<br>
+<br>
+        
+    <section id="final">
+        <h2>¿Listo/a para publicar tu proyecto?</h2>
+        <a href="PublicarProyecto.html">
+            <button>COMIENZA AQUÍ</button>
+        </a>
+
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; UNIPRO 2024</p>
+        </div>
+    </footer>
+
+    
+
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    
+</body>
+</html>

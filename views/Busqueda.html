@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Resultados</title>
+    <link rel="stylesheet" href="PlantillasRecursos.css">
+    <link rel="stylesheet" type="text/css" href="PlantillasRecursos.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+                <img class="logo" src="https://i.imgur.com/fOxDc3Q.png" alt="Logo de Mi Sitio Web" width="300" height="135">
+             <form action="Busqueda.html" method="get">
+        <input type="search" name="q" placeholder="Buscar..." />
+        <button type="submit">Buscar</button>
+    </form>
+            <nav>
+                <a href="UNIPRO.html#somos-proya">Quienes Somos</a>
+                <a href="UNIPRO.html#nuestros-productos">Nuestros Productos</a>
+                <a href="UNIPRO.html#caracteristicas">Características</a>
+                <a href="UNIPRO.html#registrarse">Inicia sesión o regístrate</a>
+            </nav>
+
+        </div>
+        <div id="icon-container">
+            <div class="icon-link">
+                <a class="button_rank_quejas" target="_blank" href="QuejasYReclamos.html">
+                    <img src="https://w7.pngwing.com/pngs/100/701/png-transparent-computer-icons-complaints-cdr-text-internet.png">
+                    
+                </a>
+            </div>
+            <div class="icon-link">
+                <a class="button_rank_preguntas" target="_blank" href="PreguntasFrecuentes.html">
+                    <img src="https://www.itm.edu.co//wp-content/uploads/2021/bienestar/presupuesto-participativo/pp-7.jpg">
+                    
+                </a>
+            </div>
+        </div>
+       
+
+    </header>
+    
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <center><h2>Resultados para: <span id="searchQuery"></span></h2></center>
+        <div id="resultsContainer"></div>
+    </div>
+
+    <script>
+        // Simulación de una base de datos
+        const database = [
+            { title: "Plantilla de Proyecto", description: "Plantilla para estructurar proyectos." },
+            { title: "Guía para la gestión de proyectos", description: "Guía para gestionar proyectos de manera efectiva." },
+            { title: "Recursos de diseño", description: "Recursos gráficos para tus proyectos." },
+            { title: "Plantilla de Informe", description: "Plantilla para elaborar informes académicos." },
+            { title: "Checklist de Proyecto", description: "Lista de verificación para tus proyectos." },
+            { title: "Ejemplos de Presentaciones", description: "Ejemplos de presentaciones efectivas." }
+        ];
+
+        // Obtener el término de búsqueda de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('query');
+        document.getElementById('searchQuery').textContent = query;
+
+        // Filtrar resultados de la base de datos
+        const results = database.filter(item =>
+            item.title.toLowerCase().includes(query.toLowerCase()) ||
+            item.description.toLowerCase().includes(query.toLowerCase())
+        );
+
+        // Mostrar los resultados
+        const resultsContainer = document.getElementById('resultsContainer');
+        if (results.length > 0) {
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.innerHTML = `<h3>${result.title}</h3><p>${result.description}</p>`;
+                resultsContainer.appendChild(resultItem);
+            });
+        } else {
+            resultsContainer.innerHTML = "<p>No se encontraron resultados.</p>";
+        }
+    </script>
+</body>
+</html>
+
+    <footer>
+        <div class="container2">
+            <p>&copy; UNIPRO 2024</p>
+        </div>
+    </footer>
+
+    
+
+    <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    
+</body>
+</html>

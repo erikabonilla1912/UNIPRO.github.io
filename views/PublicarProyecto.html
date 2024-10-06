@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Proyecto</title>
+    <link rel="stylesheet" href="PublicarProyecto.css ">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img class="logo" src="https://i.imgur.com/fOxDc3Q.png" alt="Logo de Mi Sitio Web" width="300" height="135">
+            <form action="Busqueda.html" method="get">
+                <input type="search" name="q" placeholder="Buscar..." />
+                <button type="submit">Buscar</button>
+            </form>
+            <nav>
+                <a href="UNIPRO.html#somos-proya">Quienes Somos</a>
+                <a href="UNIPRO.html#nuestros-productos">Nuestros Productos</a>
+                <a href="UNIPRO.html#caracteristicas">Características</a>
+                <a href="UNIPRO.html#registrarse">Inicia sesión o regístrate</a>
+            </nav>
+        </div>
+        <div id="icon-container">
+            <div class="icon-link">
+                <a class="button_rank_quejas" target="_blank" href="QuejasYReclamos.html">
+                    <img src="https://w7.pngwing.com/pngs/100/701/png-transparent-computer-icons-complaints-cdr-text-internet.png">
+                </a>
+            </div>
+            <div class="icon-link">
+                <a class="button_rank_preguntas" target="_blank" href="PreguntasFrecuentes.html">
+                    <img src="https://www.itm.edu.co//wp-content/uploads/2021/bienestar/presupuesto-participativo/pp-7.jpg">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Formulario de Publicar Proyecto -->
+    <div id="project-form">
+        <h2>Publicar Proyecto</h2>
+        <form action="/procesar_proyecto" method="post" id="projectForm" enctype="multipart/form-data">
+            <div>
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" required>
+            </div>
+            <div>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" required></textarea>
+            </div>
+            <div>
+                <label for="imagen">Imagen:</label>
+                <input type="file" id="imagen" name="imagen" accept="image/*">
+            </div>
+            <div>
+                <label for="video">Video:</label>
+                <input type="file" id="video" name="video" accept="video/*">
+            </div>
+            <button type="submit">Publicar Proyecto</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas Frecuentes</title>
+    <link rel="stylesheet" href="PreguntasFrecuentes.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img class="logo" src="https://i.imgur.com/fOxDc3Q.png" alt="Logo de Mi Sitio Web" width="300" height="135">
+            <form action="Busqueda.html" method="get">
+                <input type="search" name="q" placeholder="Buscar..." />
+                <button type="submit">Buscar</button>
+            </form>
+            <nav>
+                <a href="UNIPRO.html#somos-proya">Quienes Somos</a>
+                <a href="UNIPRO.html#nuestros-productos">Nuestros Productos</a>
+                <a href="UNIPRO.html#caracteristicas">Características</a>
+                <a href="UNIPRO.html#registrarse">Inicia sesión o regístrate</a>
+            </nav>
+        </div>
+        <div id="icon-container">
+            <div class="icon-link">
+                <a class="button_rank_quejas" target="_blank" href="QuejasYReclamos.html">
+                    <img src="https://w7.pngwing.com/pngs/100/701/png-transparent-computer-icons-complaints-cdr-text-internet.png">
+                </a>
+            </div>
+            <div class="icon-link">
+                <a class="button_rank_preguntas" target="_blank" href="PreguntasFrecuentes.html">
+                    <img src="https://www.itm.edu.co//wp-content/uploads/2021/bienestar/presupuesto-participativo/pp-7.jpg">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Preguntas Frecuentes</h1>
+
+        <ul class="faq-list" id="faqList">
+            <!-- Aquí se mostrarán las preguntas frecuentes -->
+        </ul>
+
+        <h2>Formulario para agregar pregunta</h2>
+        <div class="form-group">
+            <label for="question">Pregunta:</label>
+            <input type="text" id="question" placeholder="Ingrese su pregunta">
+        </div>
+        <div class="form-group">
+            <label for="answer">Respuesta:</label>
+            <textarea id="answer" placeholder="Ingrese la respuesta"></textarea>
+        </div>
+        <div class="form-group">
+            <button onclick="addQuestion()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        // Simulación de datos de preguntas frecuentes
+        const faqs = [
+            { question: "¿Cómo me registro?", answer: "Para registrarte, haz clic en el botón 'Registrarse' en la esquina superior derecha de la página." },
+            { question: "¿Cómo puedo cambiar mi contraseña?", answer: "Puedes cambiar tu contraseña en la sección 'Configuración de la cuenta' después de iniciar sesión." }
+        ];
+
+        // Función para mostrar las preguntas frecuentes en la página
+        function renderFAQs() {
+            const faqList = document.getElementById('faqList');
+            faqList.innerHTML = '';
+            faqs.forEach(faq => {
+                const faqItem = document.createElement('li');
+                faqItem.classList.add('faq-item');
+                faqItem.innerHTML = `
+                    <div class="faq-question">${faq.question}</div>
+                    <div class="faq-answer">${faq.answer}</div>
+                `;
+                faqList.appendChild(faqItem);
+            });
+        }
+
+        // Función para agregar una nueva pregunta
+        function addQuestion() {
+            const questionInput = document.getElementById('question');
+            const answerInput = document.getElementById('answer');
+            const question = questionInput.value.trim();
+            const answer = answerInput.value.trim();
+            if (question && answer) {
+                faqs.push({ question, answer });
+                renderFAQs();
+                questionInput.value = '';
+                answerInput.value = '';
+            } else {
+                alert('Por favor complete todos los campos.');
+            }
+        }
+
+        // Mostrar las preguntas frecuentes al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFAQs();
+        });
+    </script>
+</body>
+</html>
+
