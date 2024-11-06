@@ -1,5 +1,3 @@
-// reclamoModel.js
-
 const mongoose = require('mongoose');
 
 const reclamoSchema = new mongoose.Schema({

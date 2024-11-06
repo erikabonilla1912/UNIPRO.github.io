@@ -1,5 +1,3 @@
-// proyectoModel.js
-
 const mongoose = require('mongoose');
 
 const proyectoSchema = new mongoose.Schema({
