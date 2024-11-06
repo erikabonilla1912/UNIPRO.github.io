@@ -2,10 +2,10 @@ const request = require('supertest');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const User = require('../../models/userModel'); 
-const loginRouter = require('../../controllers/login'); 
+const User = require('../../models/userModel');
+const loginRouter = require('../../controllers/procesar_login');
 
-jest.mock('../../models/userModel'); 
+jest.mock('../../models/userModel');
 
 const app = express();
 app.use(express.json());
@@ -23,14 +23,18 @@ describe('POST /login', () => {
 
   it('should log in successfully and return a token', async () => {
     User.findOne.mockResolvedValue({ _id: userId, email, password: hashedPassword });
-    bcrypt.compare = jest.fn().mockResolvedValue(true);
-    jwt.sign = jest.fn().mockReturnValue('mocked_token');
+
+    // Mock bcrypt.compare using jest.spyOn instead of direct assignment
+    jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+    
+    // Mock jwt.sign
+    jest.spyOn(jwt, 'sign').mockReturnValue('mocked_token');
 
     const response = await request(app).post('/login').send({ email, password });
 
     expect(response.status).toBe(200);
-    expect(response.text).toContain('Login successful');
-    expect(response.text).toContain('Token: mocked_token');
+    expect(response.body.message).toBe('Login successful');
+    expect(response.body.token).toBe('mocked_token');
   });
 
   it('should return an error if the user does not exist', async () => {
@@ -39,17 +43,19 @@ describe('POST /login', () => {
     const response = await request(app).post('/login').send({ email, password });
 
     expect(response.status).toBe(400);
-    expect(response.text).toBe('User not found');
+    expect(response.body.error).toBe('User not found');
   });
 
   it('should return an error if the password is incorrect', async () => {
     User.findOne.mockResolvedValue({ _id: userId, email, password: hashedPassword });
-    bcrypt.compare = jest.fn().mockResolvedValue(false);
+
+    // Mock bcrypt.compare for incorrect password
+    jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
 
     const response = await request(app).post('/login').send({ email, password });
 
     expect(response.status).toBe(400);
-    expect(response.text).toBe('Incorrect password');
+    expect(response.body.error).toBe('Incorrect password');
   });
 
   it('should return a server error in case of an exception', async () => {
@@ -58,6 +64,6 @@ describe('POST /login', () => {
     const response = await request(app).post('/login').send({ email, password });
 
     expect(response.status).toBe(500);
-    expect(response.text).toBe('Error logging in');
+    expect(response.body.error).toBe('Error logging in');
   });
 });

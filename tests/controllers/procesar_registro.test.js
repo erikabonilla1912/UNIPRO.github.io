@@ -3,7 +3,8 @@ const request = require('supertest');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../../models/userModel');
-const registerRouter = require('../../controllers/registerUser');
+const registerRouter = require('../../controllers/procesar_registro');
+
 
 jest.mock('../../models/userModel');
 jest.mock('bcrypt');

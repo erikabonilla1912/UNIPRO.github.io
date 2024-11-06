@@ -3,7 +3,8 @@ const request = require('supertest');
 const express = require('express');
 const User = require('../../models/userModel');
 const Reclamo = require('../../models/reclamoModel');
-const claimRouter = require('../../controllers/claim');
+const claimRouter = require('../../controllers/procesar_reclamo');
+
 
 jest.mock('../../models/userModel');
 jest.mock('../../models/reclamoModel');
