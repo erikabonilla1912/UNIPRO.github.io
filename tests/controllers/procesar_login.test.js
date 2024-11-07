@@ -1,69 +1,82 @@
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
-const express = require('express');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const User = require('../../models/userModel');
-const loginRouter = require('../../controllers/procesar_login');
+const jwt = require('jsonwebtoken');
+const express = require('express');
+const authRouter = require('../../controllers/procesar_login'); // Adjust path if necessary
+const User = require('../../models/userModel'); // Adjust path if necessary
 
-jest.mock('../../models/userModel');
+let app;
+let mongoServer;
 
-const app = express();
-app.use(express.json());
-app.use('/login', loginRouter);
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  await mongoose.connect(mongoServer.getUri(), { useNewUrlParser: true, useUnifiedTopology: true });
+  
+  app = express();
+  app.use(express.json());
+  app.use('/auth', authRouter); // Mount the auth router
+});
 
-describe('POST /login', () => {
-  const email = 'test@example.com';
-  const password = 'password123';
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const userId = '123456';
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+afterEach(async () => {
+  await User.deleteMany();
+});
 
-  it('should log in successfully and return a token', async () => {
-    User.findOne.mockResolvedValue({ _id: userId, email, password: hashedPassword });
-
-    // Mock bcrypt.compare using jest.spyOn instead of direct assignment
-    jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+describe('POST /auth - User Login', () => {
+  it('should login successfully with correct credentials', async () => {
+    const hashedPassword = await bcrypt.hash('securepassword123', 10);
+    const user = await User.create({ email: 'test@example.com', password: hashedPassword });
     
-    // Mock jwt.sign
-    jest.spyOn(jwt, 'sign').mockReturnValue('mocked_token');
-
-    const response = await request(app).post('/login').send({ email, password });
+    const response = await request(app)
+      .post('/auth')
+      .send({ email: 'test@example.com', password: 'securepassword123' });
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Login successful');
-    expect(response.body.token).toBe('mocked_token');
+    expect(response.text).toContain('Inicio de sesión exitoso');
+    
+    const token = response.text.split('Token: ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    expect(decoded.id).toBe(user._id.toString());
   });
 
-  it('should return an error if the user does not exist', async () => {
-    User.findOne.mockResolvedValue(null);
-
-    const response = await request(app).post('/login').send({ email, password });
+  it('should return 400 if email is not found', async () => {
+    const response = await request(app)
+      .post('/auth')
+      .send({ email: 'nonexistent@example.com', password: 'somepassword' });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toBe('User not found');
+    expect(response.text).toBe('Usuario no encontrado');
   });
 
-  it('should return an error if the password is incorrect', async () => {
-    User.findOne.mockResolvedValue({ _id: userId, email, password: hashedPassword });
+  it('should return 400 if password is incorrect', async () => {
+    const hashedPassword = await bcrypt.hash('securepassword123', 10);
+    await User.create({ email: 'test@example.com', password: hashedPassword });
 
-    // Mock bcrypt.compare for incorrect password
-    jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
-
-    const response = await request(app).post('/login').send({ email, password });
+    const response = await request(app)
+      .post('/auth')
+      .send({ email: 'test@example.com', password: 'wrongpassword' });
 
     expect(response.status).toBe(400);
-    expect(response.body.error).toBe('Incorrect password');
+    expect(response.text).toBe('Contraseña incorrecta');
   });
 
-  it('should return a server error in case of an exception', async () => {
-    User.findOne.mockRejectedValue(new Error('DB error'));
+  it('should return 500 if an error occurs during login', async () => {
+    const originalFindOne = User.findOne;
+    User.findOne = jest.fn().mockRejectedValue(new Error('Unexpected error'));
 
-    const response = await request(app).post('/login').send({ email, password });
+    const response = await request(app)
+      .post('/auth')
+      .send({ email: 'test@example.com', password: 'securepassword123' });
 
     expect(response.status).toBe(500);
-    expect(response.body.error).toBe('Error logging in');
+    expect(response.text).toBe('Error al iniciar sesión');
+
+    User.findOne = originalFindOne; // Restore the original function
   });
 });

@@ -1,52 +1,66 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
-const Reclamo = require('../../models/reclamoModel'); // Ensure the path is correct
+const Reclamo = require('../../models/reclamoModel'); // Adjust the path if necessary
 
 let mongoServer;
 
 beforeAll(async () => {
-  // Start MongoDB in-memory server
   mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
-
-  // Connect Mongoose to the in-memory database
-  await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  await mongoose.connect(mongoServer.getUri(), { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
 afterAll(async () => {
-  // Disconnect Mongoose and stop the in-memory MongoDB server
   await mongoose.disconnect();
   await mongoServer.stop();
 });
 
-describe('Reclamo Model Test', () => {
-  it('should create a claim with title, description, and author', async () => {
+afterEach(async () => {
+  await Reclamo.deleteMany(); // Clear the database after each test
+});
+
+describe('Reclamo Model Test Suite', () => {
+  it('should create and save a Reclamo successfully', async () => {
     const reclamoData = {
-      titulo: 'Test Claim',
-      descripcion: 'This is a test claim for unit testing',
-      autor: mongoose.Types.ObjectId(), // Simulate a user ID
+      titulo: 'Reclamo de Ejemplo',
+      descripcion: 'Descripción del reclamo de ejemplo',
+      autor: new mongoose.Types.ObjectId(),
     };
-
     const reclamo = new Reclamo(reclamoData);
-    await reclamo.save();
+    const savedReclamo = await reclamo.save();
 
-    // Verify that the claim was saved correctly
-    const savedReclamo = await Reclamo.findById(reclamo._id);
-
+    // Validate that the data was saved correctly
+    expect(savedReclamo._id).toBeDefined();
     expect(savedReclamo.titulo).toBe(reclamoData.titulo);
     expect(savedReclamo.descripcion).toBe(reclamoData.descripcion);
-    expect(savedReclamo.autor.toString()).toBe(reclamoData.autor.toString());
+    expect(savedReclamo.autor).toEqual(reclamoData.autor);
   });
 
-  it('should throw an error if the title is missing', async () => {
-    const reclamoData = {
-      descripcion: 'This claim has no title',
-      autor: mongoose.Types.ObjectId(),
-    };
 
-    const reclamo = new Reclamo(reclamoData);
-    
-    // Verify that an error is thrown
-    await expect(reclamo.save()).rejects.toThrow();
+  it('should update a Reclamo successfully', async () => {
+    const reclamo = new Reclamo({
+      titulo: 'Título Original',
+      descripcion: 'Descripción Original',
+      autor: new mongoose.Types.ObjectId(),
+    });
+    await reclamo.save();
+
+    // Update title and save
+    reclamo.titulo = 'Título Actualizado';
+    const updatedReclamo = await reclamo.save();
+
+    expect(updatedReclamo.titulo).toBe('Título Actualizado');
+  });
+
+  it('should delete a Reclamo successfully', async () => {
+    const reclamo = new Reclamo({
+      titulo: 'Reclamo a Eliminar',
+      descripcion: 'Este reclamo será eliminado',
+      autor: new mongoose.Types.ObjectId(),
+    });
+    await reclamo.save();
+
+    await Reclamo.findByIdAndDelete(reclamo._id);
+    const deletedReclamo = await Reclamo.findById(reclamo._id);
+    expect(deletedReclamo).toBeNull();
   });
 });

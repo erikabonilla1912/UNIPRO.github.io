@@ -1,76 +1,100 @@
-// tests/controllers/publicarProyecto.test.js
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const request = require('supertest');
 const express = require('express');
-const User = require('../../models/userModel');
-const Proyecto = require('../../models/proyectoModel');
-const publicarProyectoRouter = require('../../controllers/procesar_proyecto');
+const Proyecto = require('../../models/proyectoModel'); // Adjust path if necessary
+const User = require('../../models/userModel'); // Adjust path if necessary
+const proyectoRouter = require('../../controllers/procesar_proyecto'); // Adjust path if necessary
 
+let app;
+let mongoServer;
 
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  await mongoose.connect(mongoServer.getUri(), { useNewUrlParser: true, useUnifiedTopology: true });
 
-jest.mock('../../models/userModel');
-jest.mock('../../models/proyectoModel');
+  app = express();
+  app.use(express.json());
+  app.use('/proyecto', proyectoRouter); // Mount the proyecto router
+});
 
-const app = express();
-app.use(express.json());
-app.use('/publish-project', publicarProyectoRouter);
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
 
-describe('POST /publish-project', () => {
-  const email = 'test@example.com';
-  const title = 'Test Project';
-  const description = 'Description of the test project';
-  const image = 'image.jpg';
-  const video = 'video.mp4';
-  const userId = '123456';
+afterEach(async () => {
+  await Proyecto.deleteMany();
+  await User.deleteMany();
+});
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe('POST /proyecto - Create Project', () => {
+  it('should create a project successfully when the user exists', async () => {
+    // Create a user to associate with the project
+    const user = await User.create({ email: 'test@example.com', nombre: 'Test User', password: 'password123' });
 
-  it('should publish a project successfully', async () => {
-    User.findOne.mockResolvedValue({ _id: userId, email });
-    Proyecto.prototype.save = jest.fn().mockResolvedValue();
+    const projectData = {
+      email: 'test@example.com',
+      titulo: 'Nuevo Proyecto',
+      descripcion: 'Descripción del proyecto',
+      imagen: 'http://example.com/image.png',
+      video: 'http://example.com/video.mp4'
+    };
 
-    const response = await request(app).post('/publish-project').send({
-      email,
-      title,
-      description,
-      image,
-      video,
-    });
+    const response = await request(app)
+      .post('/proyecto')
+      .send(projectData);
 
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Project published');
-    expect(User.findOne).toHaveBeenCalledWith({ email });
-    expect(Proyecto.prototype.save).toHaveBeenCalled();
+    expect(response.text).toBe('Proyecto publicado');
+
+    // Verify that the project was created in the database
+    const createdProject = await Proyecto.findOne({ titulo: 'Nuevo Proyecto' });
+    expect(createdProject).not.toBeNull();
+    expect(createdProject.descripcion).toBe('Descripción del proyecto');
+    expect(createdProject.imagen).toBe('http://example.com/image.png');
+    expect(createdProject.video).toBe('http://example.com/video.mp4');
+    expect(createdProject.usuario.toString()).toBe(user._id.toString());
   });
 
-  it('should return an error if the user does not exist', async () => {
-    User.findOne.mockResolvedValue(null);
+  it('should return 404 if the user does not exist', async () => {
+    const projectData = {
+      email: 'nonexistent@example.com',
+      titulo: 'Proyecto Inexistente',
+      descripcion: 'Descripción del proyecto',
+      imagen: 'http://example.com/image.png',
+      video: 'http://example.com/video.mp4'
+    };
 
-    const response = await request(app).post('/publish-project').send({
-      email,
-      title,
-      description,
-      image,
-      video,
-    });
+    const response = await request(app)
+      .post('/proyecto')
+      .send(projectData);
 
     expect(response.status).toBe(404);
-    expect(response.text).toBe('User not found');
+    expect(response.text).toBe('Usuario no encontrado');
   });
 
-  it('should return a server error in case of an exception', async () => {
-    User.findOne.mockRejectedValue(new Error('DB error'));
+  it('should return 500 if there is an error during project creation', async () => {
+    // Mock User.findOne to throw an error
+    const originalFindOne = User.findOne;
+    User.findOne = jest.fn().mockRejectedValue(new Error('Unexpected error'));
 
-    const response = await request(app).post('/publish-project').send({
-      email,
-      title,
-      description,
-      image,
-      video,
-    });
+    const projectData = {
+      email: 'test@example.com',
+      titulo: 'Proyecto Erróneo',
+      descripcion: 'Descripción del proyecto erróneo',
+      imagen: 'http://example.com/image.png',
+      video: 'http://example.com/video.mp4'
+    };
+
+    const response = await request(app)
+      .post('/proyecto')
+      .send(projectData);
 
     expect(response.status).toBe(500);
-    expect(response.text).toBe('Error processing the project');
+    expect(response.text).toBe('Error al procesar el proyecto');
+
+    // Restore original User.findOne
+    User.findOne = originalFindOne;
   });
 });
